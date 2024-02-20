@@ -26,4 +26,21 @@ services:
         source: grafana-storage
         target: /var/lib/grafana
 
+  # agent 에서 controller 라는 이름으로 찾는다... container log 파일 보고 알았다.
+  ngrinder-controller:
+    image: ngrinder/controller
+    ports:
+      - '8888:80'
+      - '12000-12009:12000-12009'
+      - '16001:16001'
+
+  ngrinder-agent:
+    image: ngrinder/agent
+    command: 'ngrinder-controller:80'
+    # command: 'host.docker.internal:8888' 또한 가능하다.
+    # 이렇게 command argument 로 전달해서 설정하는 방법은 공식문서 어디서 찾은거지...?
+    # docker image 를 보면 알 수 있는것 같다. + ENTRYPOINT와 CDM에 대해서 지식이 있으면 이해가능 할듯하다.
+    # 또한, ngrinder-controller → controller 로 변경하면 command 없어도 controller 이름으로 찾는다.
+
+
 
